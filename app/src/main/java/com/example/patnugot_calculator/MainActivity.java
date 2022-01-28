@@ -1,207 +1,119 @@
 package com.example.patnugot_calculator;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Notification;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
-    private Button zero, one, two, three, four, five, six, seven, eight, nine;
-    private Button add, subtract, multiply, divide, decimal;
-    private Button equal, clear;
-    private TextView input, result;
-    private final char addition = '+';
-    private final char subtraction = '-';
-    private final char multiplication = '*';
-    private final char division = '/';
-    private final char equals = 0;
-    private double var1 = Double.NaN; //not a number
-    private double var2;
-    private char action;
+    String oldNum="";
+    String op = "+";
+    boolean newOp = true;
+    EditText input;
+    Button clear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        input = findViewById(R.id.input);
+        clear=findViewById(R.id.clearbtn);
 
-        buttonSetup();
 
-        zero.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "0");
-            }
-        });
-        one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "1");
-            }
-        });
-        two.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "2");
-            }
-        });
-        three.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "3");
-            }
-        });
-        four.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "4");
-            }
-        });
-        five.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "5");
-            }
-        });
-        six.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "6");
-            }
-        });
-        seven.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "7");
-            }
-        });
-        eight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "8");
-            }
-        });
-        nine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + "9");
-            }
-        });
-        decimal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input.setText(input.getText().toString() + ".");
-            }
-        });
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compute();
-                action = addition;
-                result.setText(String.valueOf(var1) + "+");
-                input.setText(null);
-            }
-        });
-        subtract.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compute();
-                action = subtraction;
-                result.setText(String.valueOf(var1) + "-");
-                input.setText(null);
-            }
-        });
-        multiply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compute();
-                action = multiplication;
-                result.setText(String.valueOf(var1) + "*");
-                input.setText(null);
-            }
-        });
-        divide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compute();
-                action = division;
-                result.setText(String.valueOf(var1) + "/");
-                input.setText(null);
-            }
-        });
-        equal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compute();
-                action = equals;
-                result.setText(result.getText().toString() + String.valueOf(var2) + "=" + String.valueOf(var1));
-                input.setText(null);
-            }
-        });
+    }
+
+
+
+    public void numberSetup(View view) {
+        if(newOp)
+            input.setText("");
+        newOp = false;
+        String number = input.getText().toString();
+        switch (view.getId()){
+            case R.id.onebtn:
+                number += "1";
+                break;
+            case R.id.twobtn:
+                number += "2";
+                break;
+            case R.id.threebtn:
+                number += "3";
+                break;
+            case R.id.fourbtn:
+                number += "4";
+                break;
+            case R.id.fivebtn:
+                number += "5";
+                break;
+            case R.id.sixbtn:
+                number += "6";
+                break;
+            case R.id.sevenbtn:
+                number += "7";
+                break;
+            case R.id.eightbtn:
+                number += "8";
+                break;
+            case R.id.ninebtn:
+                number += "9";
+                break;
+            case R.id.zerobtn:
+                number += "0";
+                break;
+            case R.id.decimal:
+                number += ".";
+                break;
+
+        }
+        input.setText(number);
+    }
+
+    public void operatorSetup(View view) {
+        newOp = true;
+        oldNum = input.getText().toString();
+        switch (view.getId()){
+                case R.id.dividebtn:
+                op = "/";
+                break;
+                case R.id.multiplybtn:
+                op = "*";
+                break;
+                case R.id.plusbtn:
+                op = "+";
+                break;
+                case R.id.minusbtn:
+                op = "-";
+                break;
+        }
+    }
+
+    public void solution(View view) {
+        String newNumber = input.getText().toString();
+        double result = 0.0;
+        switch (op){
+            case "addition":
+                result = Double.parseDouble(oldNum)+ Double.parseDouble(newNumber);
+                break;
+            case "subtraction":
+                result = Double.parseDouble(oldNum)- Double.parseDouble(newNumber);
+                break;
+            case "multiplication":
+                result = Double.parseDouble(oldNum)* Double.parseDouble(newNumber);
+                break;
+            case "division":
+                result = Double.parseDouble(oldNum)/ Double.parseDouble(newNumber);
+                break;
+        }
+        input.setText(result+"");
+
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (input.getText().length() > 0) {
                     CharSequence numbers = input.getText().toString();
                     input.setText(numbers.subSequence(0, numbers.length() - 1));
-                } else {
-                    var1 = Double.NaN;
-                    var2 = Double.NaN;
-                    input.setText(null);
-                    result.setText(null);
                 }
             }
         });
-    }
-
-    private void buttonSetup() {
-        zero = (Button) findViewById(R.id.zerobtn);
-        one = (Button) findViewById(R.id.onebtn);
-        two = (Button) findViewById(R.id.twobtn);
-        three = (Button) findViewById(R.id.threebtn);
-        four = (Button) findViewById(R.id.fourbtn);
-        five = (Button) findViewById(R.id.fivebtn);
-        six = (Button) findViewById(R.id.sixbtn);
-        seven = (Button) findViewById(R.id.sevenbtn);
-        eight = (Button) findViewById(R.id.eightbtn);
-        nine = (Button) findViewById(R.id.ninebtn);
-        add = (Button) findViewById(R.id.plusbtn);
-        subtract = (Button) findViewById(R.id.minusbtn);
-        multiply = (Button) findViewById(R.id.multiplybtn);
-        divide = (Button) findViewById(R.id.dividebtn);
-        decimal = (Button) findViewById(R.id.decimal);
-        clear = (Button) findViewById(R.id.clearbtn);
-        equal = (Button) findViewById(R.id.equal);
-        input = (TextView) findViewById(R.id.input);
-        result = (TextView) findViewById(R.id.answer);
-    }
-
-    private void compute() {
-        if (!Double.isNaN(var1)) {
-            var2 = Double.parseDouble(input.getText().toString());
-            switch (action) {
-                case addition:
-                    var1 = var1 + var2;
-                    break;
-                case subtraction:
-                    var1 = var1 - var2;
-                    break;
-                case multiplication:
-                    var1 = var1 * var2;
-                    break;
-                case division:
-                    var1 = var1 / var2;
-                    break;
-                case equals:
-                    break;
-
-            }
-        } else {
-            var1 = Double.parseDouble(input.getText().toString());
-        }
-
-    }
+    };
 }
